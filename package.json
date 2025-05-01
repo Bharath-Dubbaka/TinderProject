@@ -2,10 +2,10 @@
    "name": "namastenode",
    "version": "1.0.0",
    "main": "index.js",
-   "devDependencies": {},
    "dependencies": {
       "express": "^5.1.0",
-      "mongodb": "^6.16.0"
+      "mongodb": "^6.16.0",
+      "mongoose": "^8.14.1"
    },
    "scripts": {
       "start": "node src/app.js",
