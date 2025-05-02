@@ -2,6 +2,7 @@ const express = require("express");
 const { connectDB } = require("./config/database");
 const app = express();
 const { User } = require("./models/user");
+const { ReturnDocument } = require("mongodb");
 
 app.use(express.json());
 
@@ -13,6 +14,36 @@ app.get("/feed", async (req, res) => {
    } else {
       console.log(users);
       res.send(users);
+   }
+});
+
+app.delete("/user", async (req, res) => {
+   const _id = req.body.userID;
+
+   try {
+      await User.findByIdAndDelete({ _id: _id });
+      res.send("Deleted user successfully", _id);
+      console.log("Deleted user successfully", _id);
+   } catch (err) {
+      res.status(400).send("delete NOT done :::" + err.message);
+      console.log("delete NOT done", err.message);
+   }
+});
+
+app.patch("/user", async (req, res) => {
+   const id = req.body.userID;
+   const userData = req.body;
+
+   try {
+      const newData = await User.findByIdAndUpdate({ _id: id }, userData, {
+         returnDocument: "after",
+         runValidators: true,
+      });
+      // console.log(newData, "newData");
+      res.send("User updated successfully");
+   } catch (err) {
+      res.status(400).send("update NOT done :::" + err.message);
+      // console.log("update NOT done", err.message);
    }
 });
 
@@ -31,8 +62,10 @@ app.post("/signup", async (req, res) => {
    try {
       await user.save();
       res.send("user added successfully");
+      console.log("user added successfully");
    } catch (err) {
-      res.status(400).send("user NOT added successfully");
+      res.status(400).send("user NOT added :::" + err.message);
+      console.log("user NOT added", err.message);
    }
 });
 
