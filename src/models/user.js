@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema(
    {
@@ -17,11 +18,23 @@ const userSchema = new mongoose.Schema(
          unique: true,
          lowercase: true,
          trim: true,
+         validate(value) {
+            if (!validator.isEmail(value)) {
+               console.log("This is not a valid email");
+               throw new Error("This is not a valid email");
+            }
+         },
       },
       password: {
          type: String,
          required: true,
          minLength: 8,
+         validate(value) {
+            if (!validator.isStrongPassword(value)) {
+               console.log("Provide strong or valid password");
+               throw new Error("Provide strong or valid password");
+            }
+         },
       },
       age: {
          type: String,
@@ -41,11 +54,17 @@ const userSchema = new mongoose.Schema(
          type: String,
          default:
             "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png",
+         validate(value) {
+            if (!validator.isURL(value)) {
+               console.log("This is not a valid URI/URL");
+               throw new Error("This is not a valid URI/URL");
+            }
+         },
       },
       about: {
          type: String,
          minLength: 3,
-         maxLength: 50,
+         maxLength: 80,
          default: "Hi there, Iam using whatsapp",
       },
       skills: {

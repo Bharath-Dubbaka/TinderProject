@@ -5,7 +5,8 @@
    "dependencies": {
       "express": "^5.1.0",
       "mongodb": "^6.16.0",
-      "mongoose": "^8.14.1"
+      "mongoose": "^8.14.1",
+      "validator": "^13.15.0"
    },
    "scripts": {
       "start": "node src/app.js",
