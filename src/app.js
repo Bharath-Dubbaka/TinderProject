@@ -3,7 +3,7 @@ const { connectDB } = require("./config/database");
 const app = express();
 const { User } = require("./models/user");
 const { ReturnDocument } = require("mongodb");
-const { validateSignUp } = require("./utils/validateSignUp");
+const { validateSignUp, validateLogin } = require("./utils/validate");
 const bcrypt = require("bcrypt");
 
 app.use(express.json());
@@ -93,6 +93,30 @@ app.post("/signup", async (req, res) => {
    } catch (err) {
       res.status(400).send("user NOT added :::" + err.message);
       console.log("user NOT added", err.message);
+   }
+});
+
+app.post("/login", async (req, res) => {
+   try {
+      validateLogin(req);
+      const { emailID, password } = req.body;
+      const validUser = await User.findOne({ emailID: emailID });
+      if (!validUser) {
+         throw new Error("Wrong ID or Password");
+      }
+      const isPasswordValid = await bcrypt.compare(
+         password,
+         validUser.password
+      );
+      if (isPasswordValid) {
+         console.log("Login Successful");
+         res.send("Login Successful");
+      } else {
+         throw new Error("Wrong ID or Password");
+      }
+   } catch (err) {
+      res.status(400).send("Wrong ID or Password :::" + err.message);
+      console.log("Wrong ID or Password", err.message);
    }
 });
 

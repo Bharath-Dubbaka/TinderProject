@@ -13,4 +13,14 @@ function validateSignUp(req) {
    }
 }
 
-module.exports = { validateSignUp };
+function validateLogin(req) {
+   const {  emailID, password } = req.body;
+   if (!validator.isEmail(emailID)) {
+      throw new Error("Enter validate email");
+   }
+   if (!validator.isStrongPassword(password)) {
+      throw new Error("Enter validate password");
+   }
+}
+
+module.exports = { validateSignUp , validateLogin};
