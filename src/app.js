@@ -3,6 +3,8 @@ const { connectDB } = require("./config/database");
 const app = express();
 const { User } = require("./models/user");
 const { ReturnDocument } = require("mongodb");
+const { validateSignUp } = require("./utils/validateSignUp");
+const bcrypt = require("bcrypt");
 
 app.use(express.json());
 
@@ -70,18 +72,21 @@ app.patch("/user/:userID", async (req, res) => {
 });
 
 app.post("/signup", async (req, res) => {
-   console.log("POST called", req.body);
-   //calling new instance of user to send data to DB via mongoose
-   // const user = new User({
-   //    firstName: "brat",
-   //    lastName: "bratName",
-   //    emailID: "brat@g.com",
-   //    password: "bratPass",
-   // });
-
-   //calling new instance of user to send data from request... to DB via mongoose
-   const user = new User(req.body);
+   console.log("POST called with", req.body);
    try {
+      const { firstName, lastName, emailID, password } = req.body;
+
+      //encrypt password before saving
+      const passwordHash = await bcrypt.hash(password, 10);
+      console.log(passwordHash);
+      //calling new instance of user to send data from request... to DB via mongoose
+      const user = new User({
+         firstName,
+         lastName,
+         emailID,
+         password: passwordHash,
+      });
+      validateSignUp(req);
       await user.save();
       res.send("user added successfully");
       console.log("user added successfully");
