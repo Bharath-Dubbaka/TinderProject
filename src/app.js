@@ -5,8 +5,12 @@ const { User } = require("./models/user");
 const { ReturnDocument } = require("mongodb");
 const { validateSignUp, validateLogin } = require("./utils/validate");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const { userAuth } = require("./middlewares/auth");
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.get("/feed", async (req, res) => {
    console.log("GET feed called", req.body);
@@ -97,6 +101,7 @@ app.post("/signup", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
+   const tokenSecretKey = process.env.TokenSecretKey;
    try {
       validateLogin(req);
       const { emailID, password } = req.body;
@@ -110,6 +115,17 @@ app.post("/login", async (req, res) => {
       );
       if (isPasswordValid) {
          console.log("Login Successful");
+
+         //creating JWT token with expiry using jwtLibrary
+         const token = await jwt.sign({ _id: validUser._id }, "devTinder@123", {
+            expiresIn: "1d",
+         });
+
+         //sending token via cookie using express.js and also expiring cookies
+         res.cookie("token", token, {
+            expires: new Date(Date.now() + 8 * 3600000),
+         }); // cookie expires after 8 hours
+
          res.send("Login Successful");
       } else {
          throw new Error("Wrong ID or Password");
@@ -118,6 +134,18 @@ app.post("/login", async (req, res) => {
       res.status(400).send("Wrong ID or Password :::" + err.message);
       console.log("Wrong ID or Password", err.message);
    }
+});
+
+app.get("/profile", userAuth, async (req, res) => {
+   const user = req.user;
+   console.log("user Match", user);
+   res.send(user);
+});
+
+app.post("/sendConnectionRequest", userAuth, async (req, res) => {
+   const userFirstName = req.user.firstName;
+   console.log("connect req sent by " + userFirstName);
+   res.send("connect req sent by " + userFirstName);
 });
 
 connectDB()
