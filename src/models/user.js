@@ -78,4 +78,16 @@ const userSchema = new mongoose.Schema(
 
 const User = mongoose.model("User", userSchema);
 
+//THESE ARE MONGOOSE SCHEMA METHODS WHICH CAN BE USED 
+//Don't use arrow fns, cause we use "THIS" to refer of instance of object/user created
+// userSchema.methods.getJWT = async function (params) {
+//    const user = this;
+
+//    const token = await jwt.sign({ _id: user._id }, "devTinder@123", {
+//       expiresIn: "1d",
+//    });
+
+//    return token;
+// };
+
 module.exports = { User };
