@@ -6,6 +6,7 @@ const connectionRequestSchema = new mongoose.Schema(
       fromUserID: {
          type: mongoose.Schema.Types.ObjectId, // go deep, why exactly are we using this mongoose types?
          required: true,
+         ref: "User", //linking btw two connections/tables
       },
       toUserID: {
          type: mongoose.Schema.Types.ObjectId,

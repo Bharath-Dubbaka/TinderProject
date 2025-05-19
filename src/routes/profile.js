@@ -9,7 +9,7 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
       const user = req.user; // coming from middleware
       console.log("user Match", user);
       res.send(user);
-   } catch (error) {
+   } catch (err) {
       res.status(400).send(" NOT done :::" + err.message);
       console.log(" NOT done", err.message);
    }
