@@ -58,7 +58,7 @@ authRouter.post("/login", async (req, res) => {
             expires: new Date(Date.now() + 8 * 3600000),
          }); // cookie expires after 8 hours
 
-         res.send("Login Successful");
+         res.send("Login Successful" + validUser);
       } else {
          throw new Error("Wrong ID or Password");
       }
