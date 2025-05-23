@@ -27,7 +27,15 @@ function validateEditProfileData(req) {
    const userID = req.user._id;
    const userData = req.body;
    try {
-      const ALLOWED_UPDATES = ["skills", "age", "gender", "photoUrl", "about"];
+      const ALLOWED_UPDATES = [
+         "skills",
+         "age",
+         "gender",
+         "photoUrl",
+         "about",
+         "firstName",
+         "lastName",
+      ];
 
       const isUpdateAllowed = Object.keys(userData).every((k) => {
          const allowed = ALLOWED_UPDATES.includes(k);

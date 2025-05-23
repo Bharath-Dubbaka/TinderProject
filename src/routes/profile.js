@@ -18,7 +18,7 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
 profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
    const userID = req.user._id;
    const userData = req.body;
-   console.log(userData, "userDatauserData");
+
    try {
       //extracted logic to utils
       validateEditProfileData(req);
@@ -28,7 +28,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
          runValidators: true,
       });
       console.log(newData, "newData");
-      res.send("User updated successfully");
+      res.json({ message: "User profile updated successfully", data: newData });
    } catch (err) {
       res.status(400).send("update NOT done :::" + err.message);
       console.log("update NOT done", err.message);

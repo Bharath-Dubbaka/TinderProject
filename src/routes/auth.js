@@ -58,12 +58,12 @@ authRouter.post("/login", async (req, res) => {
             expires: new Date(Date.now() + 8 * 3600000),
          }); // cookie expires after 8 hours
 
-         res.send("Login Successful" + validUser);
+         res.send(validUser);
       } else {
          throw new Error("Wrong ID or Password");
       }
    } catch (err) {
-      res.status(400).send("Wrong ID or Password :::" + err.message);
+      res.status(400).send(err.message);
       console.log("Wrong ID or Password", err.message);
    }
 });
