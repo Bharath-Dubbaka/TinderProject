@@ -11,6 +11,7 @@ authRouter.post("/signup", async (req, res) => {
    console.log("POST called with", req.body);
    try {
       const { firstName, lastName, emailID, password } = req.body;
+      validateSignUp(req);
 
       //encrypt password before saving
       const passwordHash = await bcrypt.hash(password, 10);
@@ -22,9 +23,19 @@ authRouter.post("/signup", async (req, res) => {
          emailID,
          password: passwordHash,
       });
-      validateSignUp(req);
-      await user.save();
-      res.send("user added successfully");
+
+      const savedUser = await user.save();
+
+      // 🔥 Directly create JWT here (no getJWT method on mongoose schema needed)
+      const token = jwt.sign({ _id: savedUser._id }, "devTinder@123", {
+         expiresIn: "1d",
+      });
+
+      res.cookie("token", token, {
+         expires: new Date(Date.now() + 8 * 3600000),
+      });
+
+      res.send(savedUser);
       console.log("user added successfully");
    } catch (err) {
       res.status(400).send("user NOT added :::" + err.message);
@@ -48,7 +59,7 @@ authRouter.post("/login", async (req, res) => {
       if (isPasswordValid) {
          console.log("Login Successful");
 
-         //creating JWT token with expiry using jwtLibrary
+         //creating JWT token with expiry using jwtLibrary // this is not using method from mongoose
          const token = await jwt.sign({ _id: validUser._id }, "devTinder@123", {
             expiresIn: "1d",
          });

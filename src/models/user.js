@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+// const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema(
    {
@@ -76,9 +77,7 @@ const userSchema = new mongoose.Schema(
    }
 );
 
-const User = mongoose.model("User", userSchema);
-
-//THESE ARE MONGOOSE SCHEMA METHODS WHICH CAN BE USED 
+//THESE ARE MONGOOSE SCHEMA METHODS WHICH CAN BE USED
 //Don't use arrow fns, cause we use "THIS" to refer of instance of object/user created
 // userSchema.methods.getJWT = async function (params) {
 //    const user = this;
@@ -89,5 +88,7 @@ const User = mongoose.model("User", userSchema);
 
 //    return token;
 // };
+
+const User = mongoose.model("User", userSchema);
 
 module.exports = { User };
